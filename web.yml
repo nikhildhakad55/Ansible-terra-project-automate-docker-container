@@ -1,0 +1,33 @@
+---
+ - hosts: all
+   become: true
+   tasks:
+    - name: install httpd package
+      yum:
+        name: httpd
+        state: latest
+    - name: start httpd server
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+    - name: delete the file
+      file:
+        name: /var/www/html
+        state: absent
+    - name: copy index.html file
+      ansible.posix.synchronize:
+        src: html
+        dest: /var/www/
+    - name: re-start httpd service
+      service:
+        name: httpd
+        state: restarted
+    - name: Create user FIRST
+      user:
+        name: FIRST
+        state: present
+    - name: Create user SECOND
+      user:
+        name: SECOND
+        state: present
